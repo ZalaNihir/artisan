@@ -31,6 +31,14 @@
                         @endcan
                     </flux:sidebar.group>
                 @endrole
+
+                @can('students.view')
+                    <flux:sidebar.group :heading="__('Students')" class="grid">
+                        <flux:sidebar.item icon="academic-cap" :href="route('students.index')" :current="request()->routeIs('students.*')" wire:navigate>
+                            {{ __('Students') }}
+                        </flux:sidebar.item>
+                    </flux:sidebar.group>
+                @endcan
             </flux:sidebar.nav>
 
             <flux:spacer />

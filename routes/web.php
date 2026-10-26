@@ -2,13 +2,14 @@
 
 use App\Http\Controllers\Admin\AnnouncementController;
 use App\Http\Controllers\Admin\TeacherController;
+use App\Http\Controllers\StudentController;
 use Illuminate\Support\Facades\Route;
-use Spatie\Permission\Middleware\RoleMiddleware;
 
 Route::redirect('/', 'login', 301)->name('home');
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::view('dashboard', 'dashboard')->name('dashboard');
+    Route::resource('students', StudentController::class);
 
     Route::prefix('admin')
         ->name('admin.')
