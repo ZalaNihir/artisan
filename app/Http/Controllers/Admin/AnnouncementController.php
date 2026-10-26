@@ -12,7 +12,7 @@ use Illuminate\View\View;
 
 class AnnouncementController extends Controller
 {
-    public function __construct(protected AnnouncementService $announcementsService){}
+    public function __construct(protected AnnouncementService $announcementsService) {}
 
     public function index(): View
     {

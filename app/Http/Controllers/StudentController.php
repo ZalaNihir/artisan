@@ -70,7 +70,8 @@ class StudentController extends Controller
         ]);
     }
 
-    public function update(UpdateStudentRequest $request, Student $student): RedirectResponse {
+    public function update(UpdateStudentRequest $request, Student $student): RedirectResponse
+    {
         $this->students->update(
             $student,
             $request->validated(),

@@ -16,6 +16,7 @@ class TeacherFactory extends Factory
     protected $model = User::class;
 
     protected static ?string $password;
+
     /**
      * Define the model's default state.
      *
@@ -29,11 +30,11 @@ class TeacherFactory extends Factory
             'email_verified_at' => now(),
             'password' => static::$password ??= Hash::make('password'),
             'remember_token' => Str::random(10),
-            'employee_id'=> Str::random(10),
+            'employee_id' => Str::random(10),
             'phone' => fake()->phoneNumber(),
             'address' => fake()->address(),
             'joining_date' => fake()->dateTime(),
-            'qualification'=> 'Random Q',
+            'qualification' => 'Random Q',
         ];
     }
 }

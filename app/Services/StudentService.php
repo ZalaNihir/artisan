@@ -169,7 +169,7 @@ class StudentService
             (! $user->hasRole('Admin') && ! $user->hasRole('Teacher'))
             || ! $user->can($permission)
         ) {
-            throw new AuthorizationException();
+            throw new AuthorizationException;
         }
     }
 }
