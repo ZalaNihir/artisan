@@ -39,6 +39,14 @@
                         </flux:sidebar.item>
                     </flux:sidebar.group>
                 @endcan
+
+                @can('parents.view')
+                    <flux:sidebar.group :heading="__('Family')" class="grid">
+                        <flux:sidebar.item icon="users" :href="route('parents.index')" :current="request()->routeIs('parents.*')" wire:navigate>
+                            {{ __('Parents') }}
+                        </flux:sidebar.item>
+                    </flux:sidebar.group>
+                @endcan
             </flux:sidebar.nav>
 
             <flux:spacer />
