@@ -1,31 +1,44 @@
 <x-layouts::app :title="__('Dashboard')">
-    <div class="flex h-full w-full flex-1 flex-col gap-4 rounded-xl">
-        @role('Teacher')
-            @unlessrole('Admin')
-                @can('announcements.view')
-                    <a href="{{ route('teacher.notifications.index') }}" class="flex items-center justify-between gap-4 rounded-xl border border-blue-200 bg-blue-50 p-5 transition hover:bg-blue-100 dark:border-blue-900 dark:bg-blue-950/30 dark:hover:bg-blue-950/50">
-                        <div>
-                            <h2 class="font-semibold text-zinc-900 dark:text-white">{{ __('Teacher Notifications') }}</h2>
-                            <p class="mt-1 text-sm text-zinc-600 dark:text-zinc-300">{{ __('Read announcements published by the administration.') }}</p>
-                        </div>
-                        <span class="shrink-0 rounded-full bg-blue-700 px-3 py-1 text-sm font-semibold text-white">{{ __(':count unread', ['count' => $unreadAnnouncementCount]) }}</span>
-                    </a>
+    <div class="flex h-full w-full flex-1 flex-col gap-6 p-4 md:p-8">
+        <div>
+            <h1 class="text-2xl font-semibold tracking-tight text-zinc-900 dark:text-white">{{ __('Dashboard') }}</h1>
+            <p class="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
+                {{ match ($role) {
+                    'admin' => __('System overview'),
+                    'teacher' => __('Your teaching overview'),
+                    default => __('Application overview'),
+                } }}
+            </p>
+        </div>
+
+        @if ($role === 'admin')
+            <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+                @can('teachers.view')
+                    <x-dashboard.card :label="__('Total Teachers')" :count="$counts['teachers']" :description="__('Manage teacher accounts')" :href="route('admin.teachers.index')" icon="users" />
                 @endcan
-            @endunlessrole
-        @endrole
-        <div class="grid auto-rows-min gap-4 md:grid-cols-3">
-            <div class="relative aspect-video overflow-hidden rounded-xl border border-neutral-200 dark:border-neutral-700">
-                <x-placeholder-pattern class="absolute inset-0 size-full stroke-gray-900/20 dark:stroke-neutral-100/20" />
+                @can('students.view')
+                    <x-dashboard.card :label="__('Total Students')" :count="$counts['students']" :description="__('Browse all students')" :href="route('students.index')" icon="academic-cap" />
+                @endcan
+                @can('parents.view')
+                    <x-dashboard.card :label="__('Total Parents')" :count="$counts['parents']" :description="__('Browse all parents and guardians')" :href="route('parents.index')" icon="user-group" />
+                @endcan
             </div>
-            <div class="relative aspect-video overflow-hidden rounded-xl border border-neutral-200 dark:border-neutral-700">
-                <x-placeholder-pattern class="absolute inset-0 size-full stroke-gray-900/20 dark:stroke-neutral-100/20" />
+        @elseif ($role === 'teacher')
+            <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+                @can('students.view')
+                    <x-dashboard.card :label="__('My Students')" :count="$counts['students']" :description="__('View your student list')" :href="route('students.index')" icon="academic-cap" />
+                @endcan
+                @can('parents.view')
+                    <x-dashboard.card :label="__('My Parents')" :count="$counts['parents']" :description="__('View parents of your students')" :href="route('parents.index')" icon="user-group" />
+                @endcan
+                @can('announcements.view')
+                    <x-dashboard.card :label="__('Unread Notifications')" :count="$counts['unread_notifications']" :description="__('Read Admin announcements for teachers')" :href="route('teacher.notifications.index')" icon="bell" />
+                @endcan
             </div>
-            <div class="relative aspect-video overflow-hidden rounded-xl border border-neutral-200 dark:border-neutral-700">
-                <x-placeholder-pattern class="absolute inset-0 size-full stroke-gray-900/20 dark:stroke-neutral-100/20" />
+        @else
+            <div class="rounded-xl border border-zinc-200 bg-white p-6 text-sm text-zinc-600 shadow-sm dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-300">
+                {{ __('Welcome to your dashboard.') }}
             </div>
-        </div>
-        <div class="relative h-full flex-1 overflow-hidden rounded-xl border border-neutral-200 dark:border-neutral-700">
-            <x-placeholder-pattern class="absolute inset-0 size-full stroke-gray-900/20 dark:stroke-neutral-100/20" />
-        </div>
+        @endif
     </div>
 </x-layouts::app>
