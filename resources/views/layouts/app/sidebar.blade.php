@@ -24,6 +24,11 @@
                                 {{ __('Teachers') }}
                             </flux:sidebar.item>
                         @endcan
+                        @can('announcements.view')
+                            <flux:sidebar.item icon="users" :href="route('admin.announcements.index')" :current="request()->routeIs('admin.announcements.*')" wire:navigate>
+                                {{ __('Announcements') }}
+                            </flux:sidebar.item>
+                        @endcan
                     </flux:sidebar.group>
                 @endrole
             </flux:sidebar.nav>
