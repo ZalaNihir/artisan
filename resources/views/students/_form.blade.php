@@ -2,10 +2,11 @@
 @php($dateOfBirth = old('dob', $student?->dob?->toDateString()))
 <div class="grid gap-5 sm:grid-cols-2">
     @foreach (['first_name' => __('First name'), 'last_name' => __('Last name')] as $field => $label)
-        <flux:input label="{{ $label }}" name="{{ $field }}" :value="$values($field)" required maxlength="255" />
+        <flux:input label="{{ $label }}" name="{{ $field }}" :value="$values($field)" required maxlength="255" placeholder="{{ str_replace('_',' ',$field) }}" />
     @endforeach
-    <flux:input label="{{ __('Email') }}" name="email" type="email" :value="$values('email')" />
-    <flux:input label="{{ __('Phone number') }}" name="phone_number" :value="$values('phone_number')" />
+    <flux:input label="{{ __('Grade') }}" name="grade" :value="$values('grade')" required maxlength="50" placeholder="{{ __('e.g. Grade 5 or Year 8') }}" />
+    <flux:input label="{{ __('Email') }}" name="email" type="email" :value="$values('email')" placeholder="{{ __('students@gmail.com') }}" />
+    <flux:input label="{{ __('Phone number') }}" name="phone_number" :value="$values('phone_number')" placeholder="{{ __('1234567890') }}" />
     <flux:input label="{{ __('Date of birth') }}" name="dob" type="date" :value="$dateOfBirth" />
     <div>
         <label class="mb-1.5 block text-sm font-medium text-zinc-700 dark:text-zinc-200">

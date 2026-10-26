@@ -4,20 +4,20 @@
 <div class="grid gap-5 sm:grid-cols-2">
     @foreach (['first_name' => __('First name'), 'last_name' => __('Last name')] as $field => $label)
         <div>
-            <flux:input label="{{ $label }}" name="{{ $field }}" :value="$values($field)" required maxlength="100" />
+            <flux:input label="{{ $label }}" name="{{ $field }}" :value="$values($field)" required maxlength="100" placeholder="{{ str_replace('_',' ',$field) }}" />
         </div>
     @endforeach
     <div>
-        <flux:input label="{{ __('Phone') }}" name="phone" :value="$values('phone')" required maxlength="20" />
+        <flux:input label="{{ __('Phone') }}" name="phone" :value="$values('phone')" required maxlength="20" placeholder="{{ __('1234567890') }}" />
     </div>
     <div>
         <flux:input label="{{ __('Alternate phone') }}" name="alternate_phone" :value="$values('alternate_phone')" maxlength="20" />
     </div>
     <div>
-        <flux:input label="{{ __('Email') }}" name="email" type="email" :value="$values('email')" maxlength="255" />
+        <flux:input label="{{ __('Email') }}" name="email" type="email" :value="$values('email')" maxlength="255" placeholder="{{ __('parents.here@gmail.com') }}" />
     </div>
     <div>
-        <flux:input label="{{ __('Occupation') }}" name="occupation" :value="$values('occupation')" maxlength="150" />
+        <flux:input label="{{ __('Occupation') }}" name="occupation" :value="$values('occupation')" maxlength="150" placeholder="{{ __('Engineer') }}" />
     </div>
 </div>
 
