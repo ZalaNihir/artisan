@@ -27,9 +27,9 @@ A Laravel school management application with separate Admin and Teacher workflow
 
 ## Local Setup
 
-From the project root:
-
 ```bash
+git clone https://github.com/ZalaNihir/artisan.git
+cd artisan
 composer install
 cp .env.example .env
 php artisan key:generate
