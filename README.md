@@ -41,12 +41,6 @@ The default `.env.example` uses SQLite. Create its database file before migratin
 touch database/database.sqlite
 ```
 
-On Windows PowerShell, use:
-
-```powershell
-New-Item database/database.sqlite -ItemType File
-```
-
 Then create the schema and local demo records, install frontend dependencies, and build the assets:
 
 ```bash
