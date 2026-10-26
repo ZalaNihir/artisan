@@ -18,6 +18,7 @@ class TeacherService
         return User::query()
             ->role('Teacher')
             ->whereDoesntHave('roles', fn (Builder $query) => $query->where('name', 'Admin'))
+            ->withCount('students')
             ->orderBy('name')
             ->orderBy('id')
             ->paginate(15);

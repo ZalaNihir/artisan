@@ -21,6 +21,7 @@
                         <tr>
                             <th scope="col" class="px-5 py-3">{{ __('Teacher') }}</th>
                             <th scope="col" class="px-5 py-3">{{ __('Email address') }}</th>
+                            <th scope="col" class="px-5 py-3">{{ __('Students') }}</th>
                             <th scope="col" class="px-5 py-3">{{ __('Added') }}</th>
                             <th scope="col" class="px-5 py-3 text-right">{{ __('Actions') }}</th>
                         </tr>
@@ -30,6 +31,7 @@
                             <tr>
                                 <td class="whitespace-nowrap px-5 py-4 font-medium text-zinc-900 dark:text-white">{{ $teacher->name }}</td>
                                 <td class="whitespace-nowrap px-5 py-4 text-zinc-600 dark:text-zinc-300">{{ $teacher->email }}</td>
+                                <td class="whitespace-nowrap px-5 py-4 text-zinc-600 dark:text-zinc-300">{{ $teacher->students_count }}</td>
                                 <td class="whitespace-nowrap px-5 py-4 text-zinc-500 dark:text-zinc-400">{{ $teacher->created_at->format('M j, Y') }}</td>
                                 <td class="whitespace-nowrap px-5 py-4">
                                     <div class="flex justify-end gap-3">
@@ -47,7 +49,7 @@
                                 </td>
                             </tr>
                         @empty
-                            <tr><td colspan="4" class="px-5 py-10 text-center text-zinc-500 dark:text-zinc-400">{{ __('No teacher accounts have been added yet.') }}</td></tr>
+                            <tr><td colspan="5" class="px-5 py-10 text-center text-zinc-500 dark:text-zinc-400">{{ __('No teacher accounts have been added yet.') }}</td></tr>
                         @endforelse
                     </tbody>
                 </table>
