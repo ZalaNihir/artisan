@@ -49,6 +49,15 @@
                 @endcan
 
                 @role('Teacher')
+                    @unlessrole('Admin')
+                        @can('announcements.view')
+                            <flux:sidebar.group :heading="__('Teaching')" class="grid">
+                                <flux:sidebar.item icon="bell" :href="route('teacher.notifications.index')" :current="request()->routeIs('teacher.notifications.*')" wire:navigate>
+                                    {{ __('Notifications') }}
+                                </flux:sidebar.item>
+                            </flux:sidebar.group>
+                        @endcan
+                    @endunlessrole
                     @can('announcements.view')
                         <flux:sidebar.group :heading="__('Teaching')" class="grid">
                             <flux:sidebar.item icon="book-open-text" :href="route('teacher.announcements.index')" :current="request()->routeIs('teacher.announcements.*')" wire:navigate>
