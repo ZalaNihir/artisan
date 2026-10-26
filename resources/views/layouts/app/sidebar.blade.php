@@ -47,6 +47,16 @@
                         </flux:sidebar.item>
                     </flux:sidebar.group>
                 @endcan
+
+                @role('Teacher')
+                    @can('announcements.view')
+                        <flux:sidebar.group :heading="__('Teaching')" class="grid">
+                            <flux:sidebar.item icon="book-open-text" :href="route('teacher.announcements.index')" :current="request()->routeIs('teacher.announcements.*')" wire:navigate>
+                                {{ __('Announcements') }}
+                            </flux:sidebar.item>
+                        </flux:sidebar.group>
+                    @endcan
+                @endrole
             </flux:sidebar.nav>
 
             <flux:spacer />

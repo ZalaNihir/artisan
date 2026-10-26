@@ -3,8 +3,10 @@
 namespace App\Services;
 
 use App\Jobs\SendAnnouncementNotificationJob;
+use App\Jobs\SendTeacherAnnouncementEmailsJob;
 use App\Models\Announcement;
 use App\Models\User;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
@@ -27,10 +29,37 @@ class AnnouncementService
     {
         $announcement = DB::transaction(fn (): Announcement => Announcement::create([
             ...Arr::only($attributes, ['title', 'message']),
+            'audience' => 'teachers',
             'created_by' => $author->getKey(),
         ]));
 
         SendAnnouncementNotificationJob::dispatch($announcement);
+
+        return $announcement;
+    }
+
+    public function paginateForTeacher(User $teacher): LengthAwarePaginator
+    {
+        $this->authorizeTeacherAction($teacher, 'announcements.view');
+
+        return Announcement::query()
+            ->whereBelongsTo($teacher, 'author')
+            ->orderByDesc('created_at')
+            ->orderByDesc('id')
+            ->paginate(15)
+            ->withQueryString();
+    }
+
+    public function createForTeacher(array $attributes, User $teacher): Announcement
+    {
+        $this->authorizeTeacherAction($teacher, 'announcements.create');
+
+        $announcement = DB::transaction(fn (): Announcement => Announcement::create([
+            ...Arr::only($attributes, ['title', 'message', 'audience']),
+            'created_by' => $teacher->getKey(),
+        ]));
+
+        SendTeacherAnnouncementEmailsJob::dispatch($announcement);
 
         return $announcement;
     }
@@ -56,9 +85,17 @@ class AnnouncementService
         }
 
         return Announcement::query()
+            ->where('audience', 'teachers')
             ->orderByDesc('created_at')
             ->orderByDesc('id')
             ->limit(5)
             ->get();
+    }
+
+    private function authorizeTeacherAction(User $teacher, string $permission): void
+    {
+        if (! $teacher->hasRole('Teacher') || $teacher->hasRole('Admin') || ! $teacher->can($permission)) {
+            throw new AuthorizationException;
+        }
     }
 }
