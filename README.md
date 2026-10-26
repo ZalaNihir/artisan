@@ -58,6 +58,8 @@ php artisan storage:link
 
 If you use MySQL or another database, configure the `DB_*` values in `.env` instead of creating the SQLite file.
 
+- email:admin@example.com, password:password
+
 ## Run the Application
 
 Start the Laravel development server:
