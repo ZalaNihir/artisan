@@ -13,7 +13,7 @@ use Illuminate\View\View;
 
 class TeacherController extends RoutingController
 {
-    public function __construct()
+    public function __construct(protected TeacherService $teachers)
     {
         $this->middleware('can:teachers.view')->only('index');
         $this->middleware('can:teachers.create')->only(['create', 'store']);
@@ -21,9 +21,9 @@ class TeacherController extends RoutingController
         $this->middleware('can:teachers.delete')->only('destroy');
     }
 
-    public function index(TeacherService $teachers): View
+    public function index(): View
     {
-        return view('admin.teachers.index', ['teachers' => $teachers->paginate()]);
+        return view('admin.teachers.index', ['teachers' => $this->teachers->paginate()]);
     }
 
     public function create(): View
@@ -31,28 +31,28 @@ class TeacherController extends RoutingController
         return view('admin.teachers.create');
     }
 
-    public function store(StoreTeacherRequest $request, TeacherService $teachers): RedirectResponse
+    public function store(StoreTeacherRequest $request): RedirectResponse
     {
-        $teachers->create($request->validated());
+        $this->teachers->create($request->validated());
 
         return to_route('admin.teachers.index')->with('success', __('Teacher account created.'));
     }
 
-    public function edit(User $teacher, TeacherService $teachers): View
+    public function edit(User $teacher): View
     {
-        return view('admin.teachers.edit', ['teacher' => $teachers->forEditing($teacher)]);
+        return view('admin.teachers.edit', ['teacher' => $this->teachers->forEditing($teacher)]);
     }
 
-    public function update(UpdateTeacherRequest $request, User $teacher, TeacherService $teachers): RedirectResponse
+    public function update(UpdateTeacherRequest $request, User $teacher): RedirectResponse
     {
-        $teachers->update($teacher, $request->validated());
+        $this->teachers->update($teacher, $request->validated());
 
         return to_route('admin.teachers.index')->with('success', __('Teacher account updated.'));
     }
 
-    public function destroy(User $teacher, TeacherService $teachers): RedirectResponse
+    public function destroy(User $teacher): RedirectResponse
     {
-        $teachers->delete($teacher);
+        $this->teachers->delete($teacher);
 
         return to_route('admin.teachers.index')->with('success', __('Teacher account deleted.'));
     }

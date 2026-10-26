@@ -12,9 +12,6 @@ use Spatie\Permission\Models\Role;
 
 class TeacherService
 {
-    /**
-     * @return LengthAwarePaginator<int, User>
-     */
     public function paginate(): LengthAwarePaginator
     {
         return User::query()
@@ -32,7 +29,6 @@ class TeacherService
         return $teacher;
     }
 
-    /** @param array<string, mixed> $attributes Validated teacher creation attributes. */
     public function create(array $attributes): User
     {
         return DB::transaction(function () use ($attributes): User {
@@ -43,7 +39,6 @@ class TeacherService
         });
     }
 
-    /** @param array<string, mixed> $attributes Validated teacher update attributes. */
     public function update(User $teacher, array $attributes): void
     {
         $this->ensureManageable($teacher);
