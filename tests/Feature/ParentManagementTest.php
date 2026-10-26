@@ -44,7 +44,7 @@ function validParentAttributes(array $overrides = []): array
     ], $overrides);
 }
 
-it('creates a parent linked to multiple students with pivot details', function () {
+it('creates a parent linked to multiple students with relationship details', function () {
     $teacher = parentManagementUser('Teacher');
     $firstStudent = studentForParentManagement($teacher, 'Avery');
     $secondStudent = studentForParentManagement($teacher, 'Jordan');
@@ -52,7 +52,7 @@ it('creates a parent linked to multiple students with pivot details', function (
     $response = $this->actingAs($teacher)->post(route('parents.store'), [
         ...validParentAttributes(),
         'students' => [
-            $firstStudent->id => ['selected' => '1', 'relationship' => 'Father', 'is_primary' => '1'],
+            $firstStudent->id => ['selected' => '1', 'relationship' => 'Father'],
             $secondStudent->id => ['selected' => '1', 'relationship' => 'Father'],
         ],
     ]);
@@ -69,7 +69,6 @@ it('creates a parent linked to multiple students with pivot details', function (
         'parent_id' => $parent->id,
         'student_id' => $firstStudent->id,
         'relationship' => 'Father',
-        'is_primary' => true,
     ]);
     $this->assertDatabaseHas('parent_student', [
         'parent_id' => $parent->id,
@@ -116,7 +115,7 @@ it('lists and shows parents with their associated children', function () {
         'last_name' => 'Test',
         'created_by' => $teacher->id,
     ]);
-    $parent->students()->attach($student, ['relationship' => 'Guardian', 'is_primary' => true]);
+    $parent->students()->attach($student, ['relationship' => 'Guardian']);
 
     $this->actingAs($teacher)
         ->get(route('parents.create'))
@@ -131,7 +130,8 @@ it('lists and shows parents with their associated children', function () {
     $this->get(route('parents.show', $parent))
         ->assertOk()
         ->assertSee('Casey Student')
-        ->assertSee('Guardian');
+        ->assertSee('Guardian')
+        ->assertDontSee('Primary contact');
 });
 
 it('updates parent details and synchronizes children without duplicate associations', function () {
@@ -141,7 +141,7 @@ it('updates parent details and synchronizes children without duplicate associati
     $parent->students()->attach($student, ['relationship' => 'Mother']);
     $payload = [
         ...validParentAttributes(['phone' => '5557654321']),
-        'students' => [$student->id => ['selected' => '1', 'relationship' => 'Mother', 'is_primary' => '1']],
+        'students' => [$student->id => ['selected' => '1', 'relationship' => 'Mother']],
     ];
 
     $this->actingAs($teacher)->get(route('parents.edit', $parent))->assertOk()->assertSee('Taylor Student');

@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use Database\Factories\StudentParentFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -20,7 +19,7 @@ class StudentParent extends Model
     public function students(): BelongsToMany
     {
         return $this->belongsToMany(Student::class, 'parent_student', 'parent_id', 'student_id')
-            ->withPivot(['relationship', 'is_primary'])
+            ->withPivot('relationship')
             ->withTimestamps();
     }
 

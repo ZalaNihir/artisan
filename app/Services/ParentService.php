@@ -169,7 +169,6 @@ class ParentService
 
             $associations[(int) $studentId] = [
                 'relationship' => filled($relationship) ? $relationship : null,
-                'is_primary' => filter_var($details['is_primary'] ?? false, FILTER_VALIDATE_BOOLEAN),
             ];
         }
 
@@ -186,11 +185,10 @@ class ParentService
             ->join('students', 'students.id', '=', 'parent_student.student_id')
             ->where('parent_student.parent_id', $parent->getKey())
             ->where('students.teacher_id', '!=', $user->getKey())
-            ->get(['parent_student.student_id', 'parent_student.relationship', 'parent_student.is_primary'])
+            ->get(['parent_student.student_id', 'parent_student.relationship'])
             ->mapWithKeys(static fn (\stdClass $association): array => [
                 (int) $association->student_id => [
                     'relationship' => $association->relationship === null ? null : (string) $association->relationship,
-                    'is_primary' => (bool) $association->is_primary,
                 ],
             ])
             ->all();

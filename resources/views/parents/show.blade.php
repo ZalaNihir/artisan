@@ -37,7 +37,7 @@
                     @forelse ($parent->students as $student)
                         <div class="flex flex-col gap-2 px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
                             <a href="{{ route('students.show', $student) }}" class="font-medium text-indigo-600 hover:underline dark:text-indigo-400">{{ $student->first_name }} {{ $student->last_name }}</a>
-                            <span class="text-sm text-zinc-500 dark:text-zinc-400">{{ $student->pivot->relationship ?: __('Relationship not specified') }}@if ($student->pivot->is_primary) · {{ __('Primary contact') }}@endif</span>
+                            <span class="text-sm text-zinc-500 dark:text-zinc-400">{{ $student->pivot->relationship ?: __('Relationship not specified') }}</span>
                         </div>
                     @empty
                         <p class="px-4 py-5 text-sm text-zinc-500 dark:text-zinc-400">{{ __('No children are associated with this parent.') }}</p>

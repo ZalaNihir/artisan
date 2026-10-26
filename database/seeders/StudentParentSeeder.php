@@ -29,7 +29,6 @@ class StudentParentSeeder extends Seeder
                         'phone' => '+1-555-0201',
                         'occupation' => 'Nurse',
                         'relationship' => 'Father',
-                        'is_primary' => true,
                     ],
                     [
                         'first_name' => 'Taylor',
@@ -38,7 +37,6 @@ class StudentParentSeeder extends Seeder
                         'phone' => '+1-555-0202',
                         'occupation' => 'Teacher',
                         'relationship' => 'Mother',
-                        'is_primary' => false,
                     ],
                 ],
             ],
@@ -56,7 +54,6 @@ class StudentParentSeeder extends Seeder
                         'phone' => '+1-555-0203',
                         'occupation' => 'Accountant',
                         'relationship' => 'Mother',
-                        'is_primary' => true,
                     ],
                     [
                         'first_name' => 'David',
@@ -65,7 +62,6 @@ class StudentParentSeeder extends Seeder
                         'phone' => '+1-555-0204',
                         'occupation' => 'Engineer',
                         'relationship' => 'Father',
-                        'is_primary' => false,
                     ],
                 ],
             ],
@@ -83,7 +79,6 @@ class StudentParentSeeder extends Seeder
                         'phone' => '+1-555-0205',
                         'occupation' => 'Small business owner',
                         'relationship' => 'Guardian',
-                        'is_primary' => true,
                     ],
                 ],
             ],
@@ -116,7 +111,6 @@ class StudentParentSeeder extends Seeder
                     $children->mapWithKeys(fn (Student $student): array => [
                         $student->getKey() => [
                             'relationship' => $parentAttributes['relationship'],
-                            'is_primary' => $parentAttributes['is_primary'],
                         ],
                     ])->all()
                 );

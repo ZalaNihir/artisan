@@ -27,7 +27,6 @@ class UpdateParentRequest extends FormRequest
             'students.*' => ['array'],
             'students.*.selected' => ['sometimes', 'boolean'],
             'students.*.relationship' => ['nullable', 'string', 'max:50'],
-            'students.*.is_primary' => ['sometimes', 'boolean'],
         ];
     }
 }
