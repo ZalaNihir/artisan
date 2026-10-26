@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\Pivot;
 
 /** @property-read Pivot $pivot */
-#[Fillable(['first_name', 'last_name', 'phone_number', 'email', 'image', 'dob', 'gender', 'address', 'teacher_id', 'status'])]
+#[Fillable(['first_name', 'last_name', 'grade', 'phone_number', 'email', 'image', 'dob', 'gender', 'address', 'teacher_id', 'status'])]
 class Student extends Model
 {
     use HasFactory;

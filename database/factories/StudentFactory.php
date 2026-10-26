@@ -21,6 +21,7 @@ class StudentFactory extends Factory
         return [
             'first_name' => fake()->firstName(),
             'last_name' => fake()->lastName(),
+            'grade' => fake()->randomElement(['Kindergarten', 'Grade 1', 'Grade 2', 'Grade 3', 'Grade 4', 'Grade 5', 'Grade 6', 'Grade 7', 'Grade 8', 'Grade 9', 'Grade 10', 'Grade 11', 'Grade 12']),
             'phone_number' => fake()->phoneNumber(),
             'email' => fake()->unique()->safeEmail(),
             'image' => null,

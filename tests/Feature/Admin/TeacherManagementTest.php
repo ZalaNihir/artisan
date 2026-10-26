@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Student;
 use App\Models\User;
 use App\Services\TeacherService;
 use Database\Seeders\RolePermissionSeeder;
@@ -26,6 +27,11 @@ test('Admin can list teachers and create a Teacher account without assigning a s
     $admin = createTeacherModuleAdmin();
     $existingTeacher = User::factory()->create(['name' => 'Existing Teacher']);
     $existingTeacher->assignRole('Teacher');
+    Student::create([
+        'first_name' => 'Assigned',
+        'last_name' => 'Student',
+        'teacher_id' => $existingTeacher->id,
+    ]);
     Mail::fake();
 
     $this->actingAs($admin)->get(route('admin.teachers.create'))->assertOk();
@@ -60,7 +66,13 @@ test('Admin can list teachers and create a Teacher account without assigning a s
     $this->get(route('admin.teachers.index'))
         ->assertOk()
         ->assertSee('Existing Teacher')
-        ->assertSee('New Teacher');
+        ->assertSee('New Teacher')
+        ->assertSee('Students')
+        ->assertSee('1');
+
+    $listedTeachers = app(TeacherService::class)->paginate();
+    expect($listedTeachers->firstWhere('id', $existingTeacher->id)->students_count)->toBe(1)
+        ->and($listedTeachers->firstWhere('email', 'new.teacher@example.com')->students_count)->toBe(0);
 });
 
 test('teacher accounts can authenticate through Fortify after creation', function () {

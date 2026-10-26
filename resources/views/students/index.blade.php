@@ -24,6 +24,7 @@
                         class="bg-zinc-50 text-xs font-semibold uppercase tracking-wide text-zinc-500 dark:bg-zinc-800 dark:text-zinc-400">
                         <tr>
                             <th class="px-5 py-3">{{ __('Student') }}</th>
+                            <th class="px-5 py-3">{{ __('Grade') }}</th>
                             <th class="px-5 py-3">{{ __('Email') }}</th>
                             <th class="px-5 py-3">{{ __('Teacher') }}</th>
                             <th class="px-5 py-3">{{ __('Status') }}</th>
@@ -37,6 +38,7 @@
                                         class="hover:underline"
                                         href="{{ route('students.show', $student) }}">{{ $student->first_name }}
                                         {{ $student->last_name }}</a></td>
+                                <td class="whitespace-nowrap px-5 py-4 text-zinc-600 dark:text-zinc-300">{{ $student->grade ?: '—' }}</td>
                                 <td class="whitespace-nowrap px-5 py-4 text-zinc-600 dark:text-zinc-300">
                                     {{ $student->email ?: '—' }}</td>
                                 <td class="whitespace-nowrap px-5 py-4 text-zinc-600 dark:text-zinc-300">
@@ -64,7 +66,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="5" class="px-5 py-10 text-center text-zinc-500 dark:text-zinc-400">
+                                <td colspan="6" class="px-5 py-10 text-center text-zinc-500 dark:text-zinc-400">
                                     {{ __('No students have been added yet.') }}</td>
                             </tr>
                         @endforelse

@@ -30,6 +30,7 @@ class StudentSeeder extends Seeder
                     [
                         'first_name' => 'Ella',
                         'last_name' => 'Morgan',
+                        'grade' => 'Grade 5',
                         'email' => 'ella.morgan@school.example.test',
                         'phone_number' => '+1-555-0101',
                         'dob' => '2014-04-12',
@@ -39,6 +40,7 @@ class StudentSeeder extends Seeder
                     [
                         'first_name' => 'Noah',
                         'last_name' => 'Morgan',
+                        'grade' => 'Grade 3',
                         'email' => 'noah.morgan@school.example.test',
                         'phone_number' => '+1-555-0102',
                         'dob' => '2016-09-03',
@@ -52,6 +54,7 @@ class StudentSeeder extends Seeder
                     [
                         'first_name' => 'Ava',
                         'last_name' => 'Chen',
+                        'grade' => 'Grade 7',
                         'email' => 'ava.chen@school.example.test',
                         'phone_number' => '+1-555-0103',
                         'dob' => '2013-11-21',
@@ -61,6 +64,7 @@ class StudentSeeder extends Seeder
                     [
                         'first_name' => 'Liam',
                         'last_name' => 'Chen',
+                        'grade' => 'Grade 5',
                         'email' => 'liam.chen@school.example.test',
                         'phone_number' => '+1-555-0104',
                         'dob' => '2015-06-08',
@@ -74,6 +78,7 @@ class StudentSeeder extends Seeder
                     [
                         'first_name' => 'Harper',
                         'last_name' => 'Williams',
+                        'grade' => 'Grade 6',
                         'email' => 'harper.williams@school.example.test',
                         'phone_number' => '+1-555-0105',
                         'dob' => '2014-02-17',
@@ -83,6 +88,7 @@ class StudentSeeder extends Seeder
                     [
                         'first_name' => 'Mason',
                         'last_name' => 'Williams',
+                        'grade' => 'Grade 4',
                         'email' => 'mason.williams@school.example.test',
                         'phone_number' => '+1-555-0106',
                         'dob' => '2016-12-29',
