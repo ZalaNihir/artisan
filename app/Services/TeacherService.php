@@ -1,0 +1,83 @@
+<?php
+
+namespace App\Services;
+
+use App\Models\User;
+use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Support\Facades\DB;
+use Spatie\Permission\Models\Role;
+
+class TeacherService
+{
+    /**
+     * @return LengthAwarePaginator<int, User>
+     */
+    public function paginate(): LengthAwarePaginator
+    {
+        return User::query()
+            ->role('Teacher')
+            ->whereDoesntHave('roles', fn (Builder $query) => $query->where('name', 'Admin'))
+            ->orderBy('name')
+            ->orderBy('id')
+            ->paginate(15);
+    }
+
+    public function forEditing(User $teacher): User
+    {
+        $this->ensureManageable($teacher);
+
+        return $teacher;
+    }
+
+    /** @param array<string, mixed> $attributes Validated teacher creation attributes. */
+    public function create(array $attributes): User
+    {
+        return DB::transaction(function () use ($attributes): User {
+            $teacher = User::create($attributes);
+            $teacher->assignRole(Role::findOrCreate('Teacher', 'web'));
+
+            return $teacher;
+        });
+    }
+
+    /** @param array<string, mixed> $attributes Validated teacher update attributes. */
+    public function update(User $teacher, array $attributes): void
+    {
+        $this->ensureManageable($teacher);
+
+        $teacher->fill([
+            'name' => $attributes['name'],
+            'email' => $attributes['email'],
+        ]);
+
+        if (filled($attributes['password'] ?? null)) {
+            $teacher->password = $attributes['password'];
+        }
+
+        if ($teacher->isDirty('email')) {
+            $teacher->email_verified_at = null;
+        }
+
+        $teacher->save();
+    }
+
+    public function delete(User $teacher): void
+    {
+        $this->ensureManageable($teacher);
+        $teacher->delete();
+    }
+
+    private function ensureManageable(User $teacher): void
+    {
+        if ($teacher->hasRole('Admin')) {
+            throw new AuthorizationException;
+        }
+
+        if (! $teacher->hasRole('Teacher')) {
+            throw (new ModelNotFoundException)->setModel(User::class, [$teacher->getKey()]);
+        }
+    }
+}

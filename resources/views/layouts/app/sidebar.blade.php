@@ -16,6 +16,16 @@
                         {{ __('Dashboard') }}
                     </flux:sidebar.item>
                 </flux:sidebar.group>
+
+                @role('Admin')
+                    <flux:sidebar.group :heading="__('Administration')" class="grid">
+                        @can('teachers.view')
+                            <flux:sidebar.item icon="users" :href="route('admin.teachers.index')" :current="request()->routeIs('admin.teachers.*')" wire:navigate>
+                                {{ __('Teachers') }}
+                            </flux:sidebar.item>
+                        @endcan
+                    </flux:sidebar.group>
+                @endrole
             </flux:sidebar.nav>
 
             <flux:spacer />
