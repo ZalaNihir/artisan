@@ -7,6 +7,7 @@ use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Role;
 
@@ -32,7 +33,12 @@ class TeacherService
     public function create(array $attributes): User
     {
         return DB::transaction(function () use ($attributes): User {
-            $teacher = User::create($attributes);
+            $teacher = User::create(Arr::only($attributes, [
+                'name',
+                'email',
+                'password',
+                ...$this->profileFields(),
+            ]));
             $teacher->assignRole(Role::findOrCreate('Teacher', 'web'));
 
             return $teacher;
@@ -43,10 +49,11 @@ class TeacherService
     {
         $this->ensureManageable($teacher);
 
-        $teacher->fill([
-            'name' => $attributes['name'],
-            'email' => $attributes['email'],
-        ]);
+        $teacher->fill(Arr::only($attributes, [
+            'name',
+            'email',
+            ...$this->profileFields(),
+        ]));
 
         if (filled($attributes['password'] ?? null)) {
             $teacher->password = $attributes['password'];
@@ -74,5 +81,10 @@ class TeacherService
         if (! $teacher->hasRole('Teacher')) {
             throw (new ModelNotFoundException)->setModel(User::class, [$teacher->getKey()]);
         }
+    }
+
+    private function profileFields(): array
+    {
+        return ['employee_id', 'phone', 'address', 'qualification', 'joining_date'];
     }
 }

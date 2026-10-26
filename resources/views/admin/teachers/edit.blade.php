@@ -16,6 +16,15 @@
                 <flux:input label="{{ __('Email address') }}" name="email" type="email" :value="old('email', $teacher->email)" required autocomplete="email" />
             </div>
             <div class="grid gap-5 sm:grid-cols-2">
+                <flux:input label="{{ __('Employee ID') }}" name="employee_id" :value="old('employee_id', $teacher->employee_id)" maxlength="50" />
+                <flux:input label="{{ __('Phone') }}" name="phone" :value="old('phone', $teacher->phone)" maxlength="30" />
+                <flux:input label="{{ __('Qualification') }}" name="qualification" :value="old('qualification', $teacher->qualification)" maxlength="255" />
+                <flux:input label="{{ __('Joining date') }}" name="joining_date" type="date" :value="old('joining_date', $teacher->joining_date)" />
+                <div class="sm:col-span-2">
+                    <flux:textarea label="{{ __('Address') }}" name="address" rows="3" maxlength="16000">{{ old('address', $teacher->address) }}</flux:textarea>
+                </div>
+            </div>
+            <div class="grid gap-5 sm:grid-cols-2">
                 <div>
                     <flux:input label="{{ __('New password') }}" name="password" type="password" autocomplete="new-password" />
                     <p class="mt-1.5 text-xs text-zinc-500 dark:text-zinc-400">{{ __('Leave blank to keep the current password.') }}</p>
