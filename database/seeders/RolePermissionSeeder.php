@@ -37,29 +37,45 @@ class RolePermissionSeeder extends Seeder
             'announcements.delete',
         ];
 
-        foreach ($permissions as $permission) {
-            Permission::findOrCreate($permission, 'web');
+        foreach ($permissions as $permissionName) {
+            Permission::firstOrCreate([
+                'name' => $permissionName,
+                'guard_name' => 'web',
+            ]);
         }
 
-        $adminRole = Role::findOrCreate('Admin', 'web');
-        $teacherRole = Role::findOrCreate('Teacher', 'web');
+        $permissionModels = Permission::whereIn('name', $permissions)
+            ->where('guard_name', 'web')
+            ->get();
 
-        $adminRole->syncPermissions($permissions);
-
-        $teacherRole->syncPermissions([
-            'students.view',
-            'students.create',
-            'students.update',
-            'students.delete',
-
-            'parents.view',
-            'parents.create',
-            'parents.update',
-            'parents.delete',
-
-            'announcements.view',
-            'announcements.create',
+        $adminRole = Role::firstOrCreate([
+            'name' => 'Admin',
+            'guard_name' => 'web',
         ]);
+
+        $teacherRole = Role::firstOrCreate([
+            'name' => 'Teacher',
+            'guard_name' => 'web',
+        ]);
+
+        $adminRole->syncPermissions($permissionModels);
+
+        $teacherRole->syncPermissions(
+            $permissionModels->whereIn('name', [
+                'students.view',
+                'students.create',
+                'students.update',
+                'students.delete',
+
+                'parents.view',
+                'parents.create',
+                'parents.update',
+                'parents.delete',
+
+                'announcements.view',
+                'announcements.create',
+            ])
+        );
 
         $admin = User::firstOrCreate(
             ['email' => 'admin@example.com'],
