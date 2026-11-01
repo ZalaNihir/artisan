@@ -37,6 +37,6 @@ class AnnouncementController extends RoutingController
         );
 
         return to_route('teacher.announcements.index')
-            ->with('success', __('Announcement created and queued for email delivery.'));
+            ->with('success', __('Announcement created.'));
     }
 }

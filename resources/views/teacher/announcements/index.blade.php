@@ -20,7 +20,7 @@
                     <div class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                         <div class="min-w-0">
                             <h2 class="text-base font-semibold text-zinc-900 dark:text-white">{{ $announcement->title }}</h2>
-                            <p class="mt-1 text-xs text-zinc-500 dark:text-zinc-400">{{ __('Audience: :audience', ['audience' => match ($announcement->audience) {'students' => __('Students'), 'parents' => __('Parents'), 'both' => __('Students and parents'), default => __('Teachers')}]) }} · {{ $announcement->created_at->format('M j, Y') }}</p>
+                            <p class="mt-1 text-xs text-zinc-500 dark:text-zinc-400">{{ __('Audience: :audience', ['audience' => match ($announcement->audience) {'students' => __('Students'), 'parents' => __('Parents'), 'both' => __('Students and parents'), default => __('Teachers')}]) }} · {{ $announcement->isSent() ? __('Sent :date', ['date' => $announcement->sent_at->format('M j, Y g:i A')]) : __('Scheduled :date', ['date' => $announcement->scheduled_at?->format('M j, Y g:i A') ?? __('Immediately')]) }}</p>
                         </div>
                     </div>
                     <p class="mt-4 whitespace-pre-line text-sm leading-6 text-zinc-600 dark:text-zinc-300">{{ $announcement->message }}</p>

@@ -28,11 +28,12 @@ class AnnouncementController extends Controller
     {
         $this->announcementsService->create($request->validated(), $request->user());
 
-        return to_route('admin.announcements.index')->with('success', __('Announcement published.'));
+        return to_route('admin.announcements.index')->with('success', __('Announcement created.'));
     }
 
     public function edit(Announcement $announcement): View
     {
+        abort_if($announcement->isSent(), 403, __('Sent announcements cannot be edited.'));
         return view('admin.announcements.edit', ['announcement' => $announcement]);
     }
 

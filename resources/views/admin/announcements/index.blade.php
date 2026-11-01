@@ -42,10 +42,11 @@
                             <p class="mt-1 text-xs text-zinc-500 dark:text-zinc-400">
                                 {{ __('Audience: :audience', ['audience' => match ($announcement->audience) {'students' => __('Students'),'parents' => __('Parents'),'both' => __('Students and parents'),default => __('Teachers')}]) }}
                             </p>
+                            <p class="mt-1 text-xs text-zinc-500 dark:text-zinc-400">{{ $announcement->isSent() ? __('Sent :date', ['date' => $announcement->sent_at->format('M j, Y g:i A')]) : __('Scheduled :date', ['date' => $announcement->scheduled_at?->format('M j, Y g:i A') ?? __('Immediately')]) }}</p>
                         </div>
                         <div class="flex shrink-0 items-center gap-3">
                             @can('announcements.update')
-                                @if ($announcement->audience == 'teachers')
+                                @if ($announcement->audience == 'teachers' && ! $announcement->isSent())
                                     <a href="{{ route('admin.announcements.edit', $announcement) }}"
                                         class="text-sm font-medium text-indigo-600 hover:text-indigo-800 dark:text-indigo-400"
                                         wire:navigate>{{ __('Edit') }}</a>

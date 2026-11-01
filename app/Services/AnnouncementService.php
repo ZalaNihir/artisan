@@ -12,6 +12,7 @@ use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Carbon;
 
 class AnnouncementService
 {
@@ -27,13 +28,16 @@ class AnnouncementService
 
     public function create(array $attributes, Authenticatable $author): Announcement
     {
+        $scheduledAt = $attributes['scheduled_at'] ?? null;
         $announcement = DB::transaction(fn (): Announcement => Announcement::create([
             ...Arr::only($attributes, ['title', 'message']),
             'audience' => 'teachers',
             'created_by' => $author->getKey(),
+            'scheduled_at' => $scheduledAt ? Carbon::parse($scheduledAt) : null,
+            'sent_at' => $scheduledAt ? null : now(),
         ]));
 
-        SendAnnouncementNotificationJob::dispatch($announcement);
+        if (! $scheduledAt) SendAnnouncementNotificationJob::dispatch($announcement);
 
         return $announcement;
     }
@@ -53,24 +57,58 @@ class AnnouncementService
     public function createForTeacher(array $attributes, User $teacher): Announcement
     {
         $this->authorizeTeacherAction($teacher, 'announcements.create');
+        $scheduledAt = $attributes['scheduled_at'] ?? null;
 
         $announcement = DB::transaction(fn (): Announcement => Announcement::create([
             ...Arr::only($attributes, ['title', 'message', 'audience']),
             'created_by' => $teacher->getKey(),
+            'scheduled_at' => $scheduledAt ? Carbon::parse($scheduledAt) : null,
+            'sent_at' => $scheduledAt ? null : now(),
         ]));
 
-        SendTeacherAnnouncementEmailsJob::dispatch($announcement);
+        if (! $scheduledAt) SendTeacherAnnouncementEmailsJob::dispatch($announcement);
 
         return $announcement;
     }
 
     public function update(Announcement $announcement, array $attributes): Announcement
     {
-        return DB::transaction(function () use ($announcement, $attributes): Announcement {
-            $announcement->fill(Arr::only($attributes, ['title', 'message']))->save();
+        $updated = DB::transaction(function () use ($announcement, $attributes): Announcement {
+            $announcement = Announcement::query()->lockForUpdate()->findOrFail($announcement->id);
+            if ($announcement->isSent()) {
+                throw new AuthorizationException(__('Sent announcements cannot be edited.'));
+            }
+            $scheduledAt = $attributes['scheduled_at'] ?? null;
+            $announcement->fill(Arr::only($attributes, ['title', 'message']))
+                ->forceFill(['scheduled_at' => $scheduledAt ? Carbon::parse($scheduledAt) : null, 'sent_at' => $scheduledAt ? null : now()])
+                ->save();
 
             return $announcement;
         });
+        if (! $updated->scheduled_at) {
+            if ($updated->audience === 'teachers') SendAnnouncementNotificationJob::dispatch($updated);
+            else SendTeacherAnnouncementEmailsJob::dispatch($updated);
+        }
+
+        return $updated;
+    }
+
+    public function publishDue(): int
+    {
+        $published = 0;
+        Announcement::query()->whereNull('sent_at')->whereNotNull('scheduled_at')
+            ->where('scheduled_at', '<=', now())->orderBy('id')->chunkById(100, function ($announcements) use (&$published): void {
+                foreach ($announcements as $announcement) {
+                    $claimed = Announcement::query()->whereKey($announcement->id)->whereNull('sent_at')
+                        ->where('scheduled_at', '<=', now())->update(['sent_at' => now(), 'updated_at' => now()]);
+                    if (! $claimed) continue;
+                    $announcement->refresh();
+                    if ($announcement->audience === 'teachers') SendAnnouncementNotificationJob::dispatch($announcement);
+                    else SendTeacherAnnouncementEmailsJob::dispatch($announcement);
+                    $published++;
+                }
+            });
+        return $published;
     }
 
     public function delete(Announcement $announcement): void
@@ -86,6 +124,7 @@ class AnnouncementService
 
         return Announcement::query()
             ->where('audience', 'teachers')
+            ->whereNotNull('sent_at')
             ->orderByDesc('created_at')
             ->orderByDesc('id')
             ->limit(5)

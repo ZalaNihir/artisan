@@ -29,6 +29,7 @@ class StoreAnnouncementRequest extends FormRequest
             'title' => ['required', 'string', 'max:255'],
             'message' => ['required', 'string', 'max:10000'],
             'audience' => ['required', Rule::in(['students', 'parents', 'both'])],
+            'scheduled_at' => ['nullable', 'date', 'after:now'],
         ];
     }
 }

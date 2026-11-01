@@ -25,6 +25,7 @@ class UpdateAnnouncementRequest extends FormRequest
         return [
             'title' => ['required', 'string', 'max:255'],
             'message' => ['required', 'string', 'max:10000'],
+            'scheduled_at' => ['nullable', 'date', 'after:now'],
         ];
     }
 }
